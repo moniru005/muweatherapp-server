@@ -26,6 +26,8 @@ async function run() {
     client.connect();
 
     const userCollection = client.db("weatherApps").collection("users");
+    const contactsCollection = client.db("weatherApps").collection("contacts");
+
 
     //jwt API
     app.post("/jwt", async (req, res) => {
@@ -76,7 +78,7 @@ async function run() {
       res.send(result);
     });
 
-    //Update to User Verified Status
+    //Update to User Active/Inactive Status
     app.patch("/users/status/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -86,6 +88,13 @@ async function run() {
         },
       };
       const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
+
+     // contact api
+     app.post("/contacts", async (req, res) => {
+      const contact = req.body;
+      const result = await contactsCollection.insertOne(contact);
       res.send(result);
     });
 
